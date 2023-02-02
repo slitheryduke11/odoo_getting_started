@@ -8,6 +8,7 @@ from odoo import api, fields, models
 class PropertyOffer(models.Model):
     _name = 'estate.property.offer'
     _description = 'Real State Property Offer'
+    _order = 'price desc'
 
     price = fields.Float()
     status = fields.Selection([
@@ -18,6 +19,7 @@ class PropertyOffer(models.Model):
     property_id = fields.Many2one("estate.property", required=True)
     validity = fields.Integer(default=7)
     date_deadline = fields.Date(compute='_compute_date_deadline', inverse='_inverse_date_deadline')
+    property_type_id = fields.Many2one(related="property_id.property_type_id", store=True)
 
     _sql_constraints = [
         ('check_price', 'CHECK(price > 0.0)',
@@ -40,6 +42,7 @@ class PropertyOffer(models.Model):
         self.status = 'accepted'
         self.property_id.buyer_id = self.partner_id
         self.property_id.selling_price = self.price
+        self.property_id.state = 'offer_accepted' 
         return True
 
     def action_refuse_offer(self):

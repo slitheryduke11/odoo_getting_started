@@ -10,6 +10,7 @@ from odoo.tools import float_utils
 class Property(models.Model):
     _name = 'estate.property'
     _description = 'Real State Property'
+    _order = 'id desc'
 
     name = fields.Char(required=True)
     description = fields.Text()
@@ -88,9 +89,6 @@ class Property(models.Model):
     @api.constrains('selling_price', 'expected_price')
     def _check_selling_price(self):
         for record in self:
-            print('####################')
-            print(record.selling_price)
-            print('####################')
             if float_utils.float_is_zero(record.selling_price, precision_rounding=4):
                 continue
             if float_utils.float_compare(record.selling_price, record.expected_price * 0.9, precision_digits=4) == -1:

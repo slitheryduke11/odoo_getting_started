@@ -14,12 +14,23 @@
         <field name="name">estate.property.type.form</field>
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
-			<form string="Property Type">
-				<sheet>
-					 <h1>
-					 	<field name="name" class="mb16"/>
-					 </h1>
-				</sheet>
+			<form>
+				<div class="oe_button_box" name="button_box">
+					<button class="oe_stat_button" name="%(estate_property_offer_action)d" type="action" icon="fa-money">
+						<field string="Appointment" name="offer_count" widget="statinfo"/>
+					</button>
+				</div>
+				<h1>
+					<field name="name" class="mb16"/>
+				</h1>
+
+				<field name="property_ids">
+					<tree>
+						<field name="name"/>
+						<field name="expected_price"/>
+						<field name="state"/>
+					</tree>
+				</field>
 			</form>
         </field>
     </record>
@@ -28,7 +39,8 @@
         <field name="name">estate.property.type.tree</field>
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
-            <tree string="Channel">
+            <tree string="Types">
+            	<field name="sequence" widget="handle"/>
                 <field name="name"/>
             </tree>
         </field>
