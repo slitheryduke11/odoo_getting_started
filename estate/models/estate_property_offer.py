@@ -2,7 +2,8 @@
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class PropertyOffer(models.Model):
@@ -15,11 +16,11 @@ class PropertyOffer(models.Model):
         ('accepted', 'Accepted'),
         ('refused', 'Refused'),
     ], copy=False)
-    partner_id = fields.Many2one("res.partner", required=True)
-    property_id = fields.Many2one("estate.property", required=True)
+    partner_id = fields.Many2one('res.partner', required=True)
+    property_id = fields.Many2one('estate.property', required=True)
     validity = fields.Integer(default=7)
     date_deadline = fields.Date(compute='_compute_date_deadline', inverse='_inverse_date_deadline')
-    property_type_id = fields.Many2one(related="property_id.property_type_id", store=True)
+    property_type_id = fields.Many2one(related='property_id.property_type_id', store=True)
 
     _sql_constraints = [
         ('check_price', 'CHECK(price > 0.0)',
@@ -51,3 +52,12 @@ class PropertyOffer(models.Model):
             self.property_id.selling_price = 0.0
         self.status = 'refused'
         return True
+
+    @api.model
+    def create(self, vals):
+        offers = self.env['estate.property'].browse(vals['property_id']).offer_ids
+        for offer in offers:
+            if vals['price'] < offer.price:
+                raise ValidationError(_('Can not create an offer with a lower amount than an existing offer.'))
+        self.env['estate.property'].browse(vals['property_id']).state = 'offer_received'
+        return super().create(vals)

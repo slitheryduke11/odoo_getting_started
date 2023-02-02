@@ -2,7 +2,7 @@
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_utils
 
@@ -39,13 +39,14 @@ class Property(models.Model):
         ('sold', 'Sold'),
         ('canceled', 'Canceled')
     ], required=True, copy=False, default='new')
-    property_type_id = fields.Many2one("estate.property.type")
-    buyer_id = fields.Many2one("res.partner", copy=False)
-    salesperson_id = fields.Many2one("res.users", default=lambda self: self.env.user)
-    tag_ids = fields.Many2many("estate.property.tag")
-    offer_ids = fields.One2many("estate.property.offer", "property_id")
+    property_type_id = fields.Many2one('estate.property.type')
+    buyer_id = fields.Many2one('res.partner', copy=False)
+    salesperson_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    tag_ids = fields.Many2many('estate.property.tag')
+    offer_ids = fields.One2many('estate.property.offer', 'property_id')
     total_area = fields.Float(compute='_compute_total_area')
     best_price = fields.Float(compute='_compute_best_price')
+    user_id = fields.Many2one('res.users')
 
     _sql_constraints = [
         ('check_expected_price', 'CHECK(expected_price > 0.0)',
@@ -65,7 +66,7 @@ class Property(models.Model):
             prices = record.mapped('offer_ids.price')
             record.best_price = max(prices) if len(prices) > 0 else 0.0
 
-    @api.onchange("garden")
+    @api.onchange('garden')
     def _onchange_garden(self):
         if self.garden:
             self.garden_area = 10
@@ -92,6 +93,11 @@ class Property(models.Model):
             if float_utils.float_is_zero(record.selling_price, precision_rounding=4):
                 continue
             if float_utils.float_compare(record.selling_price, record.expected_price * 0.9, precision_digits=4) == -1:
-                raise ValidationError("The selling price must be at least 90% of the expected price!"\
-                    " You must reduce the expected price if you want to accept this offer.")
+                raise ValidationError('The selling price must be at least 90% of the expected price!'\
+                    ' You must reduce the expected price if you want to accept this offer.')
 
+    @api.ondelete(at_uninstall=False)
+    def _check_state(self):
+        for record in self:
+            if record.state not in ['new', 'canceled']:
+                raise ValidationError(_('Only properties with \'New\' or \'Cancelled\' status can be deleted.'))
