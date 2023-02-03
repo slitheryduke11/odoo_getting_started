@@ -77,13 +77,13 @@ class Property(models.Model):
 
     def action_cancel_property(self):
         if self.state == 'sold':
-            raise UserError('Sold properties cannot be canceled.')
+            raise UserError(_('Sold properties cannot be canceled.'))
         self.state = 'canceled'
         return True
 
     def action_sold_property(self):
         if self.state == 'canceled':
-            raise UserError('Canceled properties cannot be sold.')
+            raise UserError(_('Canceled properties cannot be sold.'))
         self.state = 'sold'
         return True
 
@@ -93,8 +93,8 @@ class Property(models.Model):
             if float_utils.float_is_zero(record.selling_price, precision_rounding=4):
                 continue
             if float_utils.float_compare(record.selling_price, record.expected_price * 0.9, precision_digits=4) == -1:
-                raise ValidationError('The selling price must be at least 90% of the expected price!'\
-                    ' You must reduce the expected price if you want to accept this offer.')
+                raise ValidationError(_('The selling price must be at least 90% of the expected price!'\
+                    ' You must reduce the expected price if you want to accept this offer.'))
 
     @api.ondelete(at_uninstall=False)
     def _check_state(self):

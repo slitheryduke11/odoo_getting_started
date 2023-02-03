@@ -23,13 +23,3 @@ class PropertyType(models.Model):
     def _compute_offer_count(self):
         for record in self:
             record.offer_count = len(record.mapped('offer_ids.price'))
-
-    # def action_view_offers(self):
-    #     return {
-    #         'name': _('Offers'),
-    #         'res_model': 'estate.property.offer',
-    #         'view_mode': 'list,form',
-    #         'context': {},
-    #         'target': 'current',
-    #         'type': 'ir.actions.act_window',
-    #     }
