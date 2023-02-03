@@ -2,28 +2,9 @@
 
 from odoo import Command, api, fields, models, _
 
+
 class Property(models.Model):
 	_inherit = 'estate.property'
-
-	# partner_id = self.buyer_id
-
-	# partner_id = fields.Many2one('res.partner', copy=False)
-	# property_type_id = fields.Many2one(related='property_id.property_type_id', store=True)
-	# buyer_id =          fields.Many2one(related='res.partner', copy=False)
-
-
-	# invoice_vendor_bill_id = fields.Many2one('account.move', store=False,
-    #     check_company=True,
-    #     string='Vendor Bill',
-    #     help="Auto-complete from a past bill.")
-
-	# move_id = fields.Many2one('account.move', string='Journal Entry',
-    #     index=True, required=True, readonly=True, auto_join=True, ondelete="cascade",
-    #     check_company=True,
-    #     help="The move of this entry line.")
-
-
-
 
 	def action_sold_property(self):
 		for record in self:
