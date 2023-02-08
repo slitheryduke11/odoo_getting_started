@@ -7,5 +7,7 @@
         'estate',
         'account'
     ],
+    'author': "Vauxoo",
+    'license': 'LGPL-3',
     'application': True,
 }
