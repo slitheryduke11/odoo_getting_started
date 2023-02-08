@@ -43,7 +43,7 @@ class PropertyOffer(models.Model):
         self.status = 'accepted'
         self.property_id.buyer_id = self.partner_id
         self.property_id.selling_price = self.price
-        self.property_id.state = 'offer_accepted' 
+        self.property_id.state = 'offer_accepted'
         return True
 
     def action_refuse_offer(self):

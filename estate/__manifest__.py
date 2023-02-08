@@ -2,8 +2,9 @@
 
 {
     'name': 'Real Estate',
-    'description': 'This is a test module',
     'depends': ['base'],
+    'author': "Vauxoo",
+    'license': 'LGPL-3',
     'data': [
         'security/ir.model.access.csv',
 

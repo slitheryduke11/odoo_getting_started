@@ -22,7 +22,7 @@
         <field name="name">estate.property.offer.tree</field>
         <field name="model">estate.property.offer</field>
         <field name="arch" type="xml">
-            <tree string="Channel" editable="bottom" decoration-danger="status=='refused'" decoration-success="status=='accepted'">
+            <tree editable="bottom" decoration-danger="status=='refused'" decoration-success="status=='accepted'">
                 <field name="status" invisible="1"/>
                 <field name="price"/>
                 <field name="partner_id"/>

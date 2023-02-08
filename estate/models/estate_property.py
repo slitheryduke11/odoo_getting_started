@@ -30,7 +30,7 @@ class Property(models.Model):
         ('east', 'East'),
         ('west', 'West'),
     ])
-    
+
     active = fields.Boolean(default=True)
     state = fields.Selection([
         ('new', 'New'),
@@ -93,8 +93,9 @@ class Property(models.Model):
             if float_utils.float_is_zero(record.selling_price, precision_rounding=4):
                 continue
             if float_utils.float_compare(record.selling_price, record.expected_price * 0.9, precision_digits=4) == -1:
-                raise ValidationError(_('The selling price must be at least 90% of the expected price!'\
-                    ' You must reduce the expected price if you want to accept this offer.'))
+                raise ValidationError(
+                    _('The selling price must be at least 90% of the expected price! '
+                        'You must reduce the expected price if you want to accept this offer.'))
 
     @api.ondelete(at_uninstall=False)
     def _check_state(self):
